@@ -7,8 +7,8 @@ public class DomainException extends NoStacktraceException {
 
     private final List<Error> errors;
 
-    private DomainException(final String aMassage, final List<Error> anErrors) {
-        super(aMassage);
+    private DomainException(final String aMessage, final List<Error> anErrors) {
+        super(aMessage);
         this.errors = anErrors;
     }
 
