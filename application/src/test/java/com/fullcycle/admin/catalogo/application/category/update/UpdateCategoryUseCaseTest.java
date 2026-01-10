@@ -41,7 +41,7 @@ class UpdateCategoryUseCaseTest {
     // 4. Teste simulando um erro generico vindo do gateway
     // 5. Teste atualizar categoria passando ID inválido
     @Test
-    void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
+    public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
         final var aCategory =
                 Category.newCategory("Film", null, true);
 
