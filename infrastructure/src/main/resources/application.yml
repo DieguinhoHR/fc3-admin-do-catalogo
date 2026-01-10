@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 1024
+  undertown:
+    # Configure the number of worker and IO threads for handling requests
+    threads:
+      worker: 64
+      io: 4
+
+spring:
+  datasource:
+    url: jdbc:mysql://${mysql.url}/${mysql.schema}?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${mysql.username}
+    password: ${mysql.password}
