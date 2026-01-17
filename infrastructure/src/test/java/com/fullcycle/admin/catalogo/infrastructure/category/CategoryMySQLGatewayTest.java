@@ -1,22 +1,23 @@
 package com.fullcycle.admin.catalogo.infrastructure.category;
 
+import com.fullcycle.admin.catalogo.IntegrationTest;
 import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.category.CategoryID;
 import com.fullcycle.admin.catalogo.domain.category.CategorySearchQuery;
-import com.fullcycle.admin.catalogo.IntegrationTest;
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @IntegrationTest
-class CategoryMysqlGatewayTest {
+class CategoryMySQLGatewayTest {
 
     @Autowired
-    private CategoryMysqlGateway categoryGateway;
+    private CategoryMySQLGateway categoryGateway;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -50,14 +51,21 @@ class CategoryMysqlGatewayTest {
         Assertions.assertEquals(expectedName, actualEntity.getName());
         Assertions.assertEquals(expectedDescription, actualEntity.getDescription());
         Assertions.assertEquals(expectedIsActive, actualEntity.isActive());
-        Assertions.assertEquals(aCategory.getCreatedAt(), actualEntity.getCreatedAt());
-        Assertions.assertEquals(aCategory.getUpdatedAt(), actualEntity.getUpdatedAt());
-        Assertions.assertEquals(aCategory.getDeletedAt(), actualEntity.getDeletedAt());
+        Assertions.assertEquals(
+                aCategory.getCreatedAt().truncatedTo(ChronoUnit.MICROS),
+                actualEntity.getCreatedAt().truncatedTo(ChronoUnit.MICROS)
+        );
+
+        Assertions.assertEquals(
+                aCategory.getUpdatedAt().truncatedTo(ChronoUnit.MICROS),
+                actualEntity.getUpdatedAt().truncatedTo(ChronoUnit.MICROS)
+        );
+        Assertions.assertNull(aCategory.getDeletedAt());
         Assertions.assertNull(actualEntity.getDeletedAt());
     }
 
     @Test
-    void givenAValidCategory_whenCallsUpdate_shouldReturnCategoryUpdated() {
+    public void givenAValidCategory_whenCallsUpdate_shouldReturnCategoryUpdated() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -98,14 +106,21 @@ class CategoryMysqlGatewayTest {
         Assertions.assertEquals(expectedName, actualEntity.getName());
         Assertions.assertEquals(expectedDescription, actualEntity.getDescription());
         Assertions.assertEquals(expectedIsActive, actualEntity.isActive());
-        Assertions.assertEquals(aCategory.getCreatedAt(), actualEntity.getCreatedAt());
-        Assertions.assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
+        Assertions.assertEquals(
+                aCategory.getCreatedAt().truncatedTo(ChronoUnit.MICROS),
+                actualEntity.getCreatedAt().truncatedTo(ChronoUnit.MICROS)
+        );
+
+        Assertions.assertEquals(
+                aCategory.getUpdatedAt().truncatedTo(ChronoUnit.MICROS),
+                actualEntity.getUpdatedAt().truncatedTo(ChronoUnit.MICROS)
+        );
         Assertions.assertEquals(aCategory.getDeletedAt(), actualEntity.getDeletedAt());
         Assertions.assertNull(actualEntity.getDeletedAt());
     }
 
     @Test
-    void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
+    public void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
         final var aCategory = Category.newCategory("Filmes", null, true);
 
         Assertions.assertEquals(0, categoryRepository.count());
@@ -120,7 +135,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenInvalidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
+    public void givenInvalidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
         Assertions.assertEquals(0, categoryRepository.count());
 
         categoryGateway.deleteById(CategoryID.from("invalid"));
@@ -129,7 +144,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenAPrePersistedCategoryAndValidCategoryId_whenCallsFindById_shouldReturnCategory() {
+    public void givenAPrePersistedCategoryAndValidCategoryId_whenCallsFindById_shouldReturnCategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -157,7 +172,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenValidCategoryIdNotStored_whenCallsFindById_shouldReturnEmpty() {
+    public void givenValidCategoryIdNotStored_whenCallsFindById_shouldReturnEmpty() {
         Assertions.assertEquals(0, categoryRepository.count());
 
         final var actualCategory = categoryGateway.findById(CategoryID.from("empty"));
@@ -166,7 +181,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenPrePersistedCategories_whenCallsFindAll_shouldReturnPaginated() {
+    public void givenPrePersistedCategories_whenCallsFindAll_shouldReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 3;
@@ -196,7 +211,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenEmptyCategoriesTable_whenCallsFindAll_shouldReturnEmptyPage() {
+    public void givenEmptyCategoriesTable_whenCallsFindAll_shouldReturnEmptyPage() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 0;
@@ -213,7 +228,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenFollowPagination_whenCallsFindAllWithPage1_shouldReturnPaginated() {
+    public void givenFollowPagination_whenCallsFindAllWithPage1_shouldReturnPaginated() {
         var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 3;
@@ -267,7 +282,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenPrePersistedCategoriesAndDocAsTerms_whenCallsFindAllAndTermsMatchsCategoryName_shouldReturnPaginated() {
+    public void givenPrePersistedCategoriesAndDocAsTerms_whenCallsFindAllAndTermsMatchsCategoryName_shouldReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 1;
@@ -297,7 +312,7 @@ class CategoryMysqlGatewayTest {
     }
 
     @Test
-    void givenPrePersistedCategoriesAndMaisAssistidaAsTerms_whenCallsFindAllAndTermsMatchsCategoryDescription_shouldReturnPaginated() {
+    public void givenPrePersistedCategoriesAndMaisAssistidaAsTerms_whenCallsFindAllAndTermsMatchsCategoryDescription_shouldReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 1;

@@ -17,11 +17,11 @@ import java.util.Optional;
 import static com.fullcycle.admin.catalogo.infrastructure.utils.SpecificationUtils.like;
 
 @Service
-public class CategoryMysqlGateway implements CategoryGateway {
+public class CategoryMySQLGateway implements CategoryGateway {
 
     private final CategoryRepository repository;
 
-    public CategoryMysqlGateway(CategoryRepository repository) {
+    public CategoryMySQLGateway(CategoryRepository repository) {
         this.repository = repository;
     }
 
